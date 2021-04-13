@@ -13,10 +13,10 @@ public class TournoiClans {
      */
     public static void main(String[] args) {        
         // Lance une partie entre deux strategies pour lesquelles vous donnez les numeros
-        //combatSimple(0, 2);
+        combatSimple(22, 4);
         
         // lance un nombre defini de parties (troisieme parametres) entre deux strategies dont vous donnez le numero (deux premiers parametres)
-        combatMultiples(7, 9, 10000);
+        //combatMultiples(22, 1, 1000);
 
         // Tournoi a 10000 parties par duels avec les strategies du tableau suivant:
         // Strategies des enseignants : 1, 2, 6 et 8. Attention 8 est tres gourmande en calcul donc limiter le nombre de parties...
@@ -43,7 +43,7 @@ public class TournoiClans {
                         s2 = (Strategie) Class.forName("strats.Strat" + strats[j]).newInstance();
 
                     } catch (Exception ex) {
-                        System.out.println("Chargement impossible");
+                        System.out.println(ex.getMessage());
                         return;
                     }
                     if (k % 2 == 0) {
@@ -83,7 +83,7 @@ public class TournoiClans {
         try {
             s1 = (Strategie) Class.forName("strats.Strat"+numStrat).newInstance();
         } catch (Exception ex) {
-            System.out.println("Chargement impossible");
+            System.out.println(ex.getMessage());
             return;
         }
         
@@ -103,7 +103,7 @@ public class TournoiClans {
             s2 = (Strategie) Class.forName("strats.Strat"+strat2).newInstance();
 
         } catch (Exception ex) {
-            System.out.println("Chargement impossible");
+            System.out.println(ex.getMessage());
             return;
         }
 
