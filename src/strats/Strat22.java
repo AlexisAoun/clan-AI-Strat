@@ -2,6 +2,7 @@ package strats;
 
 import java.util.ArrayList;
 
+import javax.print.attribute.standard.MediaSize.ISO;
 
 import clans.Terrain;
 
@@ -42,6 +43,8 @@ public class Strat22 implements Strategie {
         opponentVillages = _opponentVillages;
 
         int[] sourcePossible = Tools.getSource(plateau);
+        // System.out.println(" nbre de possibilte pour src : " +
+        // sourcePossible.length);
 
         int[] output = new int[2];
 
@@ -59,7 +62,7 @@ public class Strat22 implements Strategie {
 
                 int res = computeResult(actualIdSrc, actualIdDst); // Resultat si il ya creation
                                                                    // de villages
-                //System.out.println(" res computeResult : " + res);
+                // System.out.println(" res computeResult : " + res);
                 if (res > bestResult) {
                     bestResult = res;
                     bestIdSrc = sourcePossible[iSrc];
@@ -67,8 +70,23 @@ public class Strat22 implements Strategie {
                 }
             }
         }
-        if (bestResult == 0) {
-            bestResult = -1;
+
+        if (bestResult == 0 && sourcePossible.length < 10) {
+            // System.out.println("New Strat");
+            for (int iSrc = 0; iSrc < sourcePossible.length; iSrc++) {
+                this.actualIdSrc = sourcePossible[iSrc];
+                int[] prochainCoup = formationVillageProchainCoup(this.actualIdSrc);
+                // System.out.println("Prochain coup : "+prochainCoup[0]+ " -
+                // "+prochainCoup[1]);
+                if (prochainCoup[0] == 1) {
+                    bestIdSrc = this.actualIdSrc;
+                    bestIdDst = prochainCoup[1];
+                }
+            }
+        }
+        if (bestIdSrc == 0 && bestIdDst == 0) {
+            // System.out.println("Dist Strat");
+            bestResult = -100;
             for (int iSrc = 0; iSrc < sourcePossible.length; iSrc++) {
                 int[] destinationPossible = Tools.getVoisinsDispo(plateau, sourcePossible[iSrc]);
 
@@ -78,7 +96,7 @@ public class Strat22 implements Strategie {
                     this.actualIdDst = destinationPossible[iDst];
 
                     int res = computeResultDistance(actualIdSrc, actualIdDst);
-                    //System.out.println(" res computeResultDistance : " + res);
+                    // System.out.println(" res computeResultDistance : " + res);
                     //System.out.println(" res = " + res + " bestResult = " + bestResult);
                     //System.out.println(" bestIdSrc = " + bestIdSrc + " bestIdDst = " + bestIdDst);
                     if (res > bestResult) {
@@ -99,6 +117,20 @@ public class Strat22 implements Strategie {
 
         //System.out.println(" src : " + bestIdSrc + " dst :" + bestIdDst);
         output = new int[] { bestIdSrc, bestIdDst };
+        return output;
+    }
+
+    public int[] formationVillageProchainCoup(int idSrc) {
+        int[] output = { 0, 0 };
+        int[] voisinsDispo = Tools.getVoisinsDispo(this.plateau, idSrc);
+
+        for (int i = 0; i < voisinsDispo.length; ++i) {
+            int voisin = voisinsDispo[i];
+            if (Tools.getNbVoisinsNonVide(this.plateau, voisin) < 3) {
+                output[0] = 1;
+                output[1] = voisin;
+            }
+        }
         return output;
     }
 
@@ -127,8 +159,8 @@ public class Strat22 implements Strategie {
         int myColorDistBefore = computeDistanceTotEntreMemeCouleur(this.plateau, myColor);
         // System.out.println("Exiting from calc1");
         int[] couleurPresente = plateau[idSrc].getCabanes().clone();
-        //System.out.print("couleurPresente 1 : ");
-        //afficheTabInt(couleurPresente);
+        // System.out.print("couleurPresente 1 : ");
+        // afficheTabInt(couleurPresente);
         // System.out.println("Initializing1");
         int[] distCouleurPresenteBefore = new int[couleurPresente.length];
         int sommeDistCouleurPrensenteBefore = 0;
@@ -153,8 +185,8 @@ public class Strat22 implements Strategie {
         // System.out.println("Calc3");
         int myColorDistAfter = computeDistanceTotEntreMemeCouleur(plateauSimule, myColor);
         // System.out.println("Exiting Calc3");
-        //System.out.print("couleurPresente 2 : ");
-        //afficheTabInt(couleurPresente);
+        // System.out.print("couleurPresente 2 : ");
+        // afficheTabInt(couleurPresente);
         int[] distCouleurPresenteAfter = new int[couleurPresente.length];
         for (int i = 0; i < couleurPresente.length; i++) {
             if (couleurPresente[i] == 0 || i == myColor)
@@ -162,13 +194,16 @@ public class Strat22 implements Strategie {
             else {
                 distCouleurPresenteAfter[i] = computeDistanceTotEntreMemeCouleur(plateauSimule, couleurPresente[i]);
             }
-            //System.out.println(" distCouleurPresenteAfter of " + i + " = " + distCouleurPresenteAfter[i]);
+            // System.out.println(" distCouleurPresenteAfter of " + i + " = " +
+            // distCouleurPresenteAfter[i]);
             sommeDistCouleurPrensenteAfter += distCouleurPresenteAfter[i];
         }
 
-        //System.out.println(" myColorDistBefore = " + myColorDistBefore + " myColorDistAfter = " + myColorDistAfter);
-        //System.out.println(" sommeDistCouleurPresenteAfter = " + sommeDistCouleurPrensenteAfter
-         //       + " sommeDistCouleurPresentreBefore = " + sommeDistCouleurPrensenteBefore);
+        // System.out.println(" myColorDistBefore = " + myColorDistBefore + "
+        // myColorDistAfter = " + myColorDistAfter);
+        // System.out.println(" sommeDistCouleurPresenteAfter = " +
+        // sommeDistCouleurPrensenteAfter
+        // + " sommeDistCouleurPresentreBefore = " + sommeDistCouleurPrensenteBefore);
         // System.out.println("Calculating...");
         if (myColorDistAfter - myColorDistBefore < 0)
             output = -1000;
@@ -176,7 +211,7 @@ public class Strat22 implements Strategie {
             output = ((myColorDistAfter - myColorDistBefore) * 5)
                     - (sommeDistCouleurPrensenteAfter - sommeDistCouleurPrensenteBefore);
 
-        //System.out.println(" output of computeDistScore " + output);
+        // System.out.println(" output of computeDistScore " + output);
         // System.out.println("Debug Distance : myColorDistBefore :
         // "+myColorDistBefore+" myColorDistAfter : "+myColorDistAfter);
         return output;
