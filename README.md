@@ -8,14 +8,14 @@ La stratégie de mouvement est divisée en trois cas :
 
 - Il n'y a pas formation de villages possible et il y a plus de 45 territoires sources disponibles 
 
-- Il n'y a pas formation de vilages possible et il y a moins de 45 territoires sources disponibles
+- Il n'y a pas formation de villages possible et il y a moins de 45 territoires sources disponibles
 
 - Il y a possibilté de former un village
 
 
 ### 1 - Il n'y a pas formation de villages possible et il y a plus de 45 territoires sources disponibles 
 
-Ici on se base sur le principe que plus les hutes de même couleur sont espacées plus il y a de chances que celle-ci sont dans un village plus tard dans la partie.
+Ici on se base sur le principe que plus les hutes de même couleur sont espacées plus il y a de chances que celle-ci soit dans un village plus tard dans la partie.
 
 Pour quantifier la notion d'espacement on calcule la somme des distances minimales entre une hute de couleur i et le territoire ayant une hute de couleur i le plus proche.
 
@@ -65,7 +65,7 @@ Si se n'est pas le cas on sauvegarde cette source et on prend une destination au
 
 ### 3 - Il y a possibilté de former un village
 
-Si il y a une ou plusieurs possibilités de former un ou plusieurs villages on calcule pour chaque possibilté un score représentant la différence des gains obtenues par l'IA et sa couleur, moins le gain de la couleur ayant le gain le plus important parmis les autres couleurs. 
+Si il y a une ou plusieurs possibilités de former un ou plusieurs villages on calcule pour chaque possibilté un score représentant la différence des gains obtenues par l'IA et sa couleur et le gain de la couleur ayant le gain le plus important parmis les autres couleurs. 
 
 On choisit la combinaison source/destination avec le score le plus élevé.
 
